@@ -5,14 +5,11 @@ var app        = express();                 // define our app using express
 
 // Connection URL
 var mongoAtlasURL = 'mongodb://chris:hZVJq2qoSkSu6Twe@cluster0-shard-00-00-9gjqg.mongodb.net:27017,cluster0-shard-00-01-9gjqg.mongodb.net:27017,cluster0-shard-00-02-9gjqg.mongodb.net:27017/sample?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin'
-var mongoAtlasDB;
 
-var defaultFilter = {"first_name": "Ye"};
 
 var findDocuments = function(db,fil, callback) {
   // Get the documents collection
   var collection = db.collection('peoples');
-  mongoAtlasCollection = collection;
 
   // Find some documents with the Filter  {"first_name": "Ye"}
   collection.find(fil).toArray(function(err, docs) {
@@ -44,10 +41,16 @@ MongoClient.connect(mongoAtlasURL, function(err, db) {
 // GET method route
 app.get("/people", function(req, res) {
 
-  findDocuments(mongoAtlasDB,defaultFilter,function(docs){
+  var collection = mongoAtlasDB.collection('peoples');
+
+  // Find some documents with the Filter  {"first_name": "Ye"}
+  collection.find({}).toArray(function(err, docs) {
+    assert.equal(err, null);
+    mongoAtlasDocument = docs;
+    console.log("Found " + docs.length+ " records at: " + collection.collectionName);
+    console.log(docs);
     res.json(docs);
   });
-
 });
 
 // GET method route
